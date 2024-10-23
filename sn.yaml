@@ -1,0 +1,107 @@
+# TO SPECIFY A DIFFERENT CONFIG FILE
+# Execute the Sn command with an environment variable pointing to the file:
+# SN_CONFIG=/my/config.yaml Sn
+#
+# title - The title of the site, usable in templates for output as {title}
+title: Sn
+# subtitle - The subtitle of the site, usable in templates for output as {subtitle}
+subtitle: Sn is Tin
+# rooturl - The root url of the site, usable in templates for output as {rooturl}
+rooturl: 'http://localhost/'
+# port - The port on which the server runs
+port: 8080
+# path - The "root path" for all referenced files here, relative to this file
+path: welcome
+# dbfile - The name of a database file or leave blank to use an in-memory database
+dbfile: 'file:sn?mode=memory&cache=shared'
+# dbfile: 'asy.db'
+# cleandb - true/false whether to start with a fresh database every time the app starts
+cleandb: true
+# template_dir - A directory inside of the root path where templates are stored
+template_dir: template
+# repos - An entry for each repo of data items (usually posts as markdown files), the names here are used to reference the repo
+repos:
+  posts:
+    # path - The directory inside of the root path that will be scanned for files for this repo
+    path: posts
+webauthn:
+  rp_display_name: Sn
+  rp_id: localhost
+  rp_origins:
+    - http://localhost
+# routes - A list of URL routes for this site, requests are checked against the paths in alphabetical order by name, first matched wins
+routes:
+  01_index:
+    # path - The URL pattern to match against the request, capture URL parts with {braces}
+    path: /
+    # handler - The handler used to process the data to supply to the templates, options: posts, static, debug, git
+    handler: posts
+    # template - The templates to use to render the content of this page, rendered in order
+    templates: 
+      - posts.html.hb
+      - layout.html.hb
+    # out - A list of named queries that supply data to the template, each name becomes a value that can be used in the template
+    out:
+      posts:
+        # repo - The repo to query against
+        repo: posts
+        # paginate_name - A querystring or URL part that will be used to specify what page to select
+        paginate_name: page
+        # paginate_count - The number of items to diplay on each page
+        paginate_count: 5
+  02_static:
+    handler: static
+    path: /static
+    # dir - For the static handler, the directory inside of the root path that houses content at this URL
+    dir: static
+  03_favicon:
+    path: /favicon.ico
+    handler: static
+    file: static/favicon.svg
+  04_categories:
+    path: /tag/{category}
+    handler: posts
+    templates: 
+      - posts.html.hb
+      - layout.html.hb
+    out:
+      posts:
+        repo: posts
+        category: "{category}"
+        paginate_name: page
+        paginate_count: 5
+  05_posts:
+    path: /posts/{slug:.+}
+    handler: posts
+    templates: 
+      - post.html.hb
+      - layout.html.hb
+    out:
+      posts:
+        repo: posts
+        slug: "{slug}"
+        404_on_empty: fof
+  06_search:
+    path: /search
+    template: posts.html.hb
+    layout: layout.html.hb
+    handler: posts
+    out:
+      posts:
+        repo: posts
+        search: "{params.s}"
+        paginate_name: page
+        paginate_count: 5
+  98_frontend:
+    path: /_/frontend
+    handler: frontend
+  99_debug:
+    path: /_/debug
+    handler: debug
+  fof:
+    path: /{any:.*}
+    handler: posts
+    templates: 
+      - 404.html.hb
+      - layout.html.hb
+
