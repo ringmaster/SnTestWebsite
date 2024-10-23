@@ -16,3 +16,7 @@ body>header>h1 {
 body>header>h1>a {
   display: block;
 }
+
+body {
+  background-color: #333;
+}
