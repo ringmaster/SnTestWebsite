@@ -92,6 +92,9 @@ routes:
         search: "{params.s}"
         paginate_name: page
         paginate_count: 5
+  97_webhook:
+    path: /_/webhook
+    handler: git
   98_frontend:
     path: /_/frontend
     handler: frontend
