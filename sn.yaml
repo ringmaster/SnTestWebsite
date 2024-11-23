@@ -59,7 +59,7 @@ routes:
     handler: static
     file: static/favicon.svg
   04_categories:
-    path: /tag/{category}
+    path: /tag/{tag}
     handler: posts
     templates: 
       - posts.html.hb
@@ -67,7 +67,7 @@ routes:
     out:
       posts:
         repo: posts
-        category: "{category}"
+        category: "{tag}"
         paginate_name: page
         paginate_count: 5
   05_posts:
